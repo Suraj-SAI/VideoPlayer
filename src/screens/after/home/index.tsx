@@ -25,10 +25,10 @@ const Home = () => {
 
   const getVideosFromPath = async (path: string) => {
     try {
-      const reader = await RNFS.readDir(path);
-      const videos = reader.filter((file) => {
-        const fileExtension = file.name.split('.').pop()?.toLowerCase();
-        return file.isFile() && fileExtension && videoExtensions.includes(fileExtension);
+      const reader = await RNFS?.readDir(path);
+      const videos: any = reader?.filter((file) => {
+        const fileExtension = file?.name?.split('.').pop()?.toLowerCase();
+        return file?.isFile() && fileExtension && videoExtensions?.includes(fileExtension);
       });
 
       for (const file of videos) {
@@ -46,8 +46,6 @@ const Home = () => {
   };
 
   useEffect(() => {
-    Orientation.lockToPortrait();
-
     const checkPermission = async () => {
       const granted = await requestStoragePermission();
       setHasPermission(granted);
@@ -68,10 +66,6 @@ const Home = () => {
     };
 
     loadVideos();
-
-    return () => {
-      Orientation.unlockAllOrientations();
-    };
   }, [hasPermission]);
 
   const renderItem = ({ item }: { item: any }) => (

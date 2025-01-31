@@ -10,15 +10,12 @@ const FullScreenVideoScreen = ({ route }: any) => {
 
   const exitFullScreen = () => {
     navigation.goBack();
+    Orientation.lockToPortrait();
   };
 
   useEffect(() => {
-    Orientation.lockToLandscape();
-
-    return () => {
-      Orientation.unlockAllOrientations();
-    };
-  }, []);
+    Orientation.unlockAllOrientations();
+  } , [])
 
   return (
     <View style={styles.container}>
