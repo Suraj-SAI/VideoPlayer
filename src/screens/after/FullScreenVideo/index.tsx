@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useEffect } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, StatusBar, BackHandler } from 'react-native';
 import VideoPlayer from 'react-native-video-controls';
 import Orientation from 'react-native-orientation-locker';
 
@@ -9,12 +9,26 @@ const FullScreenVideoScreen = ({ route }: any) => {
   const navigation = useNavigation<any>();
 
   const exitFullScreen = () => {
+    StatusBar.setHidden(false);
     navigation.goBack();
     Orientation.lockToPortrait();
   };
 
   useEffect(() => {
+    StatusBar.setHidden(true);
+
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+      exitFullScreen(); // Call custom exit function
+      return true; // Prevent default back behavior
+    });
+
+
     Orientation.unlockAllOrientations();
+
+    return () => {
+      backHandler.remove(); // Clean up listener when unmounting
+      StatusBar.setHidden(false); // Restore status bar visibility
+    };
   } , [])
 
   return (

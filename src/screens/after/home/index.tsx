@@ -5,7 +5,6 @@ import { styles } from './styles';
 import { navigate } from '../../../services/navigationService';
 import { Path } from '../../../constants/path';
 import { play } from '../../../constants/images';
-import Orientation from 'react-native-orientation-locker';
 import { requestStoragePermission } from '../../../services/permission';
 import { generateThumbnail } from '../../../constants/usefulcalls';
 import LoaderScreen from '../../../components/loader';
@@ -22,6 +21,7 @@ const Home = () => {
     '/storage/emulated/0/Android/media/com.whatsapp/WhatsApp/Media/WhatsApp Video/',
     '/storage/emulated/0/DCIM/Camera/',
   ];
+
 
   const getVideosFromPath = async (path: string) => {
     try {
