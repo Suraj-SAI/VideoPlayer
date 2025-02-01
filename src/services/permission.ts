@@ -12,12 +12,12 @@ export const requestStoragePermission = async () => {
                 const granted = await PermissionsAndroid.requestMultiple([
                     PermissionsAndroid.PERMISSIONS.READ_MEDIA_IMAGES,
                     PermissionsAndroid.PERMISSIONS.READ_MEDIA_VIDEO,
-                    PermissionsAndroid.PERMISSIONS.READ_MEDIA_AUDIO,
+                    // PermissionsAndroid.PERMISSIONS.READ_MEDIA_AUDIO,
                 ]);
                 return (
                     granted['android.permission.READ_MEDIA_IMAGES'] === PermissionsAndroid.RESULTS.GRANTED ||
-                    granted['android.permission.READ_MEDIA_VIDEO'] === PermissionsAndroid.RESULTS.GRANTED ||
-                    granted['android.permission.READ_MEDIA_AUDIO'] === PermissionsAndroid.RESULTS.GRANTED
+                    granted['android.permission.READ_MEDIA_VIDEO'] === PermissionsAndroid.RESULTS.GRANTED
+                    // granted['android.permission.READ_MEDIA_AUDIO'] === PermissionsAndroid.RESULTS.GRANTED
                 );
             } else {
                 const granted = await PermissionsAndroid.request(

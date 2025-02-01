@@ -9,6 +9,7 @@ import { requestStoragePermission } from '../../../services/permission';
 import { generateThumbnail } from '../../../constants/usefulcalls';
 import LoaderScreen from '../../../components/loader';
 import { MMKV } from 'react-native-mmkv';
+import Orientation from 'react-native-orientation-locker';
 
 const storage = new MMKV();
 
@@ -39,43 +40,40 @@ const Home = () => {
       setVideoFiles(JSON.parse(savedVideos));
     }
 
+    Orientation.lockToPortrait();
+
   }, []);
 
   const loadVideos = async () => {
     if (!hasPermission) return;
-  
+
     setLoading(true);
-  
-    // Initialize a set to track existing files in videoPaths
+
     let allCurrentVideoPaths = new Set();
-  
+
     for (const path of videoPaths) {
       try {
-        const reader: any = await RNFS.readDir(path);
-        const videos: any = reader?.filter((file:any) => {
-          const fileExtension = file?.name?.split('.').pop()?.toLowerCase();
+        const reader: any = await RNFS?.readDir(path);
+        const videos: any = reader?.filter((file: any) => {
+          const fileExtension = file?.name?.split('.')?.pop()?.toLowerCase();
           return file?.isFile() && fileExtension && videoExtensions?.includes(fileExtension);
         });
-  
-        // Add current videos to the set
-        videos.forEach((file: any) => allCurrentVideoPaths.add(file.path));
-  
-        // Fetch each video one by one
+
+        videos?.forEach((file: any) => allCurrentVideoPaths?.add(file.path));
+
         for (const file of videos) {
           const alreadyExists = videoFiles.some((v: any) => v?.path === file?.path);
           if (alreadyExists) continue;
-  
+
           const videoData = {
             ...file,
             mtime: new Date(file?.mtime),
             thumbnail: await generateThumbnail(file?.path),
           };
-  
-          // Append new video data to the current video list
+
           setVideoFiles((prevVideos: any) => {
             const updatedVideos = [...prevVideos, videoData];
-            
-            // Save the updated video list to MMKV storage
+
             storage.set('videos', JSON.stringify(updatedVideos));
             return updatedVideos;
           });
@@ -84,20 +82,16 @@ const Home = () => {
         console.error(`Error reading directory ${path}:`, error);
       }
     }
-  
-    // Handle deletion: Filter out videos that are no longer in the file system
+
     setVideoFiles((prevVideos: any) => {
       const updatedVideos = prevVideos.filter((video: any) => allCurrentVideoPaths.has(video?.path));
-      
-      // Update the storage with the filtered video list
+
       storage.set('videos', JSON.stringify(updatedVideos));
       return updatedVideos;
     });
-  
+
     setLoading(false);
   };
-  
-  
 
   useEffect(() => {
     loadVideos();
@@ -105,13 +99,13 @@ const Home = () => {
 
   const refreshVideos = useCallback(async () => {
     setRefreshing(true);
-    await loadVideos();  // Incrementally add new videos without clearing existing ones
+    await loadVideos();
     setRefreshing(false);
   }, [videoFiles]);
 
   const renderItem = ({ item }: { item: any }) => (
-    <TouchableOpacity style={styles.videoItem} onPress={() => navigate(Path.FullScreenVideo, { videoUri: `file://${item.path}` })}>
-      <Image source={{ uri: item?.thumbnail || play }} style={styles.videoImage} />
+    <TouchableOpacity style={styles.videoItem} onPress={() => navigate(Path?.FullScreenVideo, { videoUri: `file://${item.path}` })}>
+      <Image source={{ uri: item?.thumbnail || play }} style={styles?.videoImage} />
       <Text style={styles.videoName} numberOfLines={2} ellipsizeMode="tail">
         {item?.name}
       </Text>
