@@ -104,13 +104,19 @@ const Home = () => {
   }, [videoFiles]);
 
   const renderItem = ({ item }: { item: any }) => (
-    <TouchableOpacity style={styles.videoItem} onPress={() => navigate(Path?.FullScreenVideo, { videoUri: `file://${item.path}` })}>
+    <TouchableOpacity
+      style={styles.videoItem}
+      onPress={() => navigate(Path?.FullScreenVideo, { videoUri: `file://${item.path}` })}
+    >
+      <View style={styles.textContainer}>
+        <Text style={styles.videoName} numberOfLines={2} ellipsizeMode="tail">
+          {item?.name}
+        </Text>
+      </View>
       <Image source={{ uri: item?.thumbnail || play }} style={styles?.videoImage} />
-      <Text style={styles.videoName} numberOfLines={2} ellipsizeMode="tail">
-        {item?.name}
-      </Text>
     </TouchableOpacity>
   );
+
 
   return (
     <SafeAreaView style={styles.container}>
@@ -133,7 +139,7 @@ const Home = () => {
           numColumns={2}
           contentContainerStyle={styles.videoList}
           refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={refreshVideos} />
+            <RefreshControl refreshing={refreshing} onRefresh={refreshVideos} enabled={!loading} />
           }
         />
       )}
