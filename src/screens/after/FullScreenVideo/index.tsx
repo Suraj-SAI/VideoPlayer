@@ -3,14 +3,15 @@ import React, { useEffect } from 'react';
 import { View, StyleSheet, StatusBar, BackHandler } from 'react-native';
 import VideoPlayer from 'react-native-video-controls';
 import Orientation from 'react-native-orientation-locker';
+import { ReactNativeZoomableView } from '@openspacelabs/react-native-zoomable-view';
 
 const FullScreenVideoScreen = ({ route }: any) => {
   const { videoUri } = route.params;
   const navigation = useNavigation<any>();
 
   const exitFullScreen = () => {
-    StatusBar.setHidden(false);
     navigation.goBack();
+    StatusBar.setHidden(false);
     Orientation.lockToPortrait();
   };
 
@@ -18,18 +19,17 @@ const FullScreenVideoScreen = ({ route }: any) => {
     StatusBar.setHidden(true);
 
     const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
-      exitFullScreen(); // Call custom exit function
-      return true; // Prevent default back behavior
+      exitFullScreen();
+      return true;
     });
-
 
     Orientation.unlockAllOrientations();
 
     return () => {
-      backHandler.remove(); // Clean up listener when unmounting
-      StatusBar.setHidden(false); // Restore status bar visibility
+      backHandler.remove(); 
+      StatusBar.setHidden(false);
     };
-  } , [])
+  }, [])
 
   return (
     <View style={styles.container}>
