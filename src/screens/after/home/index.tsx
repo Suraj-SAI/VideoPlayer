@@ -1,4 +1,4 @@
-import { View, Text, FlatList, TouchableOpacity, Image, RefreshControl, StatusBar, Platform, SafeAreaView } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, Image, RefreshControl, StatusBar, SafeAreaView } from 'react-native';
 import React, { useCallback, useEffect, useState } from 'react';
 import RNFS from 'react-native-fs';
 import { styles } from './styles';
@@ -26,6 +26,10 @@ const Home = () => {
     '/storage/emulated/0/DCIM/Snapchat/',
     '/storage/emulated/0/Android/media/com.whatsapp/WhatsApp/Media/WhatsApp Video/',
     '/storage/emulated/0/DCIM/Camera/',
+    "/storage/emulated/0/DCIM/ScreenRecorder/",
+    "/storage/emulated/0/Movies/Instagram/",
+    "/storage/emulated/0/Movies/Telegram/"
+
   ];
 
   useEffect(() => {
