@@ -1,4 +1,4 @@
-import { View, Text, SafeAreaView, FlatList, TouchableOpacity, Image, RefreshControl } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, Image, RefreshControl, StatusBar, Platform, SafeAreaView } from 'react-native';
 import React, { useCallback, useEffect, useState } from 'react';
 import RNFS from 'react-native-fs';
 import { styles } from './styles';
@@ -6,10 +6,11 @@ import { navigate } from '../../../services/navigationService';
 import { Path } from '../../../constants/path';
 import { play } from '../../../constants/images';
 import { requestStoragePermission } from '../../../services/permission';
-import { generateThumbnail, getAudioFile, getSubtitleFile } from '../../../constants/usefulcalls';
+import { generateThumbnail } from '../../../constants/usefulcalls';
 import LoaderScreen from '../../../components/loader';
 import { MMKV } from 'react-native-mmkv';
 import Orientation from 'react-native-orientation-locker';
+import ImmersiveMode from 'react-native-immersive-mode';
 
 const storage = new MMKV();
 
@@ -34,6 +35,7 @@ const Home = () => {
     };
 
     checkPermission();
+
 
     const savedVideos = storage.getString('videos');
     if (savedVideos) {
@@ -102,6 +104,7 @@ const Home = () => {
     loadVideos();
   }, [hasPermission]);
 
+
   const refreshVideos = useCallback(async () => {
     setRefreshing(true);
     await loadVideos();
@@ -111,20 +114,26 @@ const Home = () => {
   const renderItem = ({ item }: { item: any }) => (
     <TouchableOpacity
       style={styles.videoItem}
-      onPress={() => navigate(Path?.FullScreenVideo, { videoUri: `file://${item.path}`})}
+      onPress={() => navigate(Path?.FullScreenVideo, { videoUri: `file://${item.path}` })}
     >
       <View style={styles.textContainer}>
         <Text style={styles.videoName} numberOfLines={2} ellipsizeMode="tail">
           {item?.name}
         </Text>
       </View>
-      <Image source={{ uri: item?.thumbnail || play }} style={styles?.videoImage} />
+      <Image
+        source={item?.thumbnail ? { uri: item.thumbnail } : play}
+        style={styles?.videoImage} />
     </TouchableOpacity>
   );
 
-
+  useEffect(() => {
+    StatusBar.setHidden(true)
+    ImmersiveMode.fullLayout(true);
+    ImmersiveMode.setBarMode('Full');
+  }, [])
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: 'black' }}>
       <Text style={styles.videoText}>Play Time</Text>
       <View style={styles.line} />
 

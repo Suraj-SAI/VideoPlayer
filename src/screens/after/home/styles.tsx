@@ -39,8 +39,7 @@ export const styles = StyleSheet.create({
     margin: wp(2),
     borderRadius: 10,
     height: hp(20),
-    padding : 1,
-    backgroundColor : "red",
+    backgroundColor : "#fff",
     position: "relative",
   },
   textContainer: {

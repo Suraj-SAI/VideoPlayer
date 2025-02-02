@@ -4,17 +4,18 @@ import {
   StyleSheet,
   StatusBar,
   BackHandler,
-  SafeAreaView,
   View,
   Dimensions,
 } from 'react-native';
-import VideoPlayer from 'react-native-video-controls';
 import Orientation from 'react-native-orientation-locker';
 import {
   GestureHandlerRootView,
   TapGestureHandler,
   State,
 } from 'react-native-gesture-handler';
+import ImmersiveMode from 'react-native-immersive-mode';
+import Video from 'react-native-video-controls';
+import { ReactNativeZoomableView } from '@openspacelabs/react-native-zoomable-view';
 
 const { width } = Dimensions.get('window');
 
@@ -27,23 +28,23 @@ const FullScreenVideoScreen = ({ route }: any) => {
 
   const exitFullScreen = () => {
     navigation.goBack();
-    StatusBar.setHidden(false);
     Orientation.lockToPortrait();
   };
 
   useEffect(() => {
     StatusBar.setHidden(true);
-
     const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
       exitFullScreen();
       return true;
     });
 
+    StatusBar.setHidden(true);
+    ImmersiveMode.fullLayout(true);
+    ImmersiveMode.setBarMode('Full');
     Orientation.unlockAllOrientations();
 
     return () => {
       backHandler.remove();
-      StatusBar.setHidden(false);
     };
   }, []);
 
@@ -68,31 +69,29 @@ const FullScreenVideoScreen = ({ route }: any) => {
 
   return (
     <GestureHandlerRootView style={styles.container}>
-      <SafeAreaView style={styles.container} pointerEvents="box-none">
-        <TapGestureHandler
-          numberOfTaps={2}
-          onHandlerStateChange={handleDoubleTap}
-        >
-          <View style={styles.fullScreenWrapper}>
-            <VideoPlayer
-              ref={videoRef}
-              disableVolume={false}
-              disableBack={false}
-              resizeMode="contain"
-              disableFullscreen={true}
-              source={{ uri: videoUri }}
-              onShowControls={true}
-              repeat={true}
-              rate={1.0}
-              style={styles.videoPlayer}
-              onProgress={handleProgress}
-              onBack={exitFullScreen}
-              tapAnywhereToPause={true}
-              subtitles={{uri: videoUri}}
-            />
-          </View>
-        </TapGestureHandler>
-      </SafeAreaView>
+      <TapGestureHandler
+        numberOfTaps={2}
+        onHandlerStateChange={handleDoubleTap}
+      >
+        <View style={styles?.fullScreenWrapper}>
+          <Video
+            ref={videoRef}
+            disableVolume={false}
+            disableBack={false}
+            resizeMode="contain"
+            disableFullscreen={true}
+            source={{ uri: videoUri }}
+            onShowControls={true}
+            repeat={true}
+            rate={1.0}
+            style={styles.videoPlayer}
+            onProgress={handleProgress}
+            onBack={exitFullScreen}
+            tapAnywhereToPause={true}
+            subtitles={{ uri: videoUri }}
+          />
+        </View>
+      </TapGestureHandler>
     </GestureHandlerRootView>
   );
 };
