@@ -10,7 +10,6 @@ import {
 } from 'react-native';
 import VideoPlayer from 'react-native-video-controls';
 import Orientation from 'react-native-orientation-locker';
-import { ReactNativeZoomableView } from '@openspacelabs/react-native-zoomable-view';
 import {
   GestureHandlerRootView,
   TapGestureHandler,
@@ -21,6 +20,7 @@ const { width } = Dimensions.get('window');
 
 const FullScreenVideoScreen = ({ route }: any) => {
   const { videoUri } = route.params;
+
   const navigation = useNavigation<any>();
   const videoRef = useRef<any>(null);
   const [currentTime, setCurrentTime] = useState(0);
@@ -87,6 +87,8 @@ const FullScreenVideoScreen = ({ route }: any) => {
               style={styles.videoPlayer}
               onProgress={handleProgress}
               onBack={exitFullScreen}
+              tapAnywhereToPause={true}
+              subtitles={{uri: videoUri}}
             />
           </View>
         </TapGestureHandler>

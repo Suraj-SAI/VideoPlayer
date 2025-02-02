@@ -6,7 +6,7 @@ import { navigate } from '../../../services/navigationService';
 import { Path } from '../../../constants/path';
 import { play } from '../../../constants/images';
 import { requestStoragePermission } from '../../../services/permission';
-import { generateThumbnail } from '../../../constants/usefulcalls';
+import { generateThumbnail, getAudioFile, getSubtitleFile } from '../../../constants/usefulcalls';
 import LoaderScreen from '../../../components/loader';
 import { MMKV } from 'react-native-mmkv';
 import Orientation from 'react-native-orientation-locker';
@@ -62,19 +62,24 @@ const Home = () => {
         videos?.forEach((file: any) => allCurrentVideoPaths?.add(file.path));
 
         for (const file of videos) {
-          const alreadyExists = videoFiles.some((v: any) => v?.path === file?.path);
+          const alreadyExists = videoFiles?.some((v: any) => v?.path === file?.path);
           if (alreadyExists) continue;
+
+          // const subtitleFile = await getSubtitleFile(file?.path);
+          // const audioFile = await getAudioFile(file?.path);
 
           const videoData = {
             ...file,
             mtime: new Date(file?.mtime),
             thumbnail: await generateThumbnail(file?.path),
+            // subtitle: subtitleFile ? `file://${subtitleFile}` : null,
+            // audio: audioFile ? `file://${audioFile}` : null,
           };
 
           setVideoFiles((prevVideos: any) => {
             const updatedVideos = [...prevVideos, videoData];
 
-            storage.set('videos', JSON.stringify(updatedVideos));
+            storage?.set('videos', JSON.stringify(updatedVideos));
             return updatedVideos;
           });
         }
@@ -84,9 +89,9 @@ const Home = () => {
     }
 
     setVideoFiles((prevVideos: any) => {
-      const updatedVideos = prevVideos.filter((video: any) => allCurrentVideoPaths.has(video?.path));
+      const updatedVideos = prevVideos.filter((video: any) => allCurrentVideoPaths?.has(video?.path));
 
-      storage.set('videos', JSON.stringify(updatedVideos));
+      storage.set('videos', JSON?.stringify(updatedVideos));
       return updatedVideos;
     });
 
@@ -106,7 +111,7 @@ const Home = () => {
   const renderItem = ({ item }: { item: any }) => (
     <TouchableOpacity
       style={styles.videoItem}
-      onPress={() => navigate(Path?.FullScreenVideo, { videoUri: `file://${item.path}` })}
+      onPress={() => navigate(Path?.FullScreenVideo, { videoUri: `file://${item.path}`})}
     >
       <View style={styles.textContainer}>
         <Text style={styles.videoName} numberOfLines={2} ellipsizeMode="tail">
@@ -120,7 +125,7 @@ const Home = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.videoText}>Videos</Text>
+      <Text style={styles.videoText}>Play Time</Text>
       <View style={styles.line} />
 
       {loading && videoFiles.length === 0 ? (
@@ -135,7 +140,7 @@ const Home = () => {
             return timeB - timeA;
           })}
           renderItem={renderItem}
-          keyExtractor={(item) => item.path}
+          keyExtractor={(item) => item?.path}
           numColumns={2}
           contentContainerStyle={styles.videoList}
           refreshControl={
