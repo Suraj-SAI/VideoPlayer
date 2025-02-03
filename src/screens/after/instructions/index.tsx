@@ -1,12 +1,12 @@
 import { View, Text } from 'react-native'
 import React from 'react'
 
-const FirstTime = () => {
+const Instructions = () => {
   return (
     <View>
-      <Text>FirstTime</Text>
+      <Text>Instructions</Text>
     </View>
   )
 }
 
-export default FirstTime
+export default Instructions

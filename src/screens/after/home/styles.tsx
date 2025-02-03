@@ -9,11 +9,22 @@ export const styles = StyleSheet.create({
   videoText: {
     fontSize: hp(2.5),
     color: "red",
-    textAlign: "left",
-    paddingHorizontal : wp(5),
-    marginTop: hp(1),
     fontWeight: "bold",
-    fontStyle: "italic"
+    fontStyle: "italic",
+    marginHorizontal: wp(2),
+  },
+  videTextView: {
+    paddingHorizontal: wp(5),
+    flexDirection: "row",
+    justifyContent: "space-between"
+  },
+  videoTextBox: {
+    flexDirection: "row",
+    alignItems: "center"
+  },
+  playImage: {
+    height: hp(3),
+    width: hp(3)
   },
   line: {
     height: hp(0.2),
@@ -39,7 +50,7 @@ export const styles = StyleSheet.create({
     margin: wp(2),
     borderRadius: 10,
     height: hp(20),
-    backgroundColor : "#fff",
+    backgroundColor: "#fff",
     position: "relative",
   },
   textContainer: {

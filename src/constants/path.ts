@@ -1,5 +1,7 @@
 export const Path = {
-    FIRST_TIME: "FIRST_TIME",
-    AFTER: "AFTER",
-    FullScreenVideo : "FullScreenVideo"
+    AFTER: "VIDEO",
+    FullScreenVideo : "FullScreenVideo",
+    MUSIC : "MUSIC",
+    INSTRUCTIONS : "INSTRUCTIONS",
+    BOTTOMTABTAB : "BOTTOMTABTAB"
 }

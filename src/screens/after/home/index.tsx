@@ -1,16 +1,17 @@
-import { View, Text, FlatList, TouchableOpacity, Image, RefreshControl, StatusBar, SafeAreaView } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, Image, RefreshControl, StatusBar, Platform } from 'react-native';
 import React, { useCallback, useEffect, useState } from 'react';
 import RNFS from 'react-native-fs';
 import { styles } from './styles';
 import { navigate } from '../../../services/navigationService';
 import { Path } from '../../../constants/path';
-import { play } from '../../../constants/images';
+import { exclaim, play, playTime } from '../../../constants/images';
 import { requestStoragePermission } from '../../../services/permission';
 import { generateThumbnail } from '../../../constants/usefulcalls';
 import LoaderScreen from '../../../components/loader';
 import { MMKV } from 'react-native-mmkv';
 import Orientation from 'react-native-orientation-locker';
 import ImmersiveMode from 'react-native-immersive-mode';
+import { useNavigation } from '@react-navigation/native';
 
 const storage = new MMKV();
 
@@ -20,7 +21,8 @@ const Home = () => {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const videoExtensions = ['mp4', 'mkv', 'avi', 'mov', 'webm', 'flv', 'wmv'];
-
+  const statusBarHeight = Platform.OS === 'android' ? StatusBar.currentHeight : 44;
+  
   const videoPaths = [
     RNFS?.DownloadDirectoryPath,
     '/storage/emulated/0/DCIM/Snapchat/',
@@ -29,7 +31,6 @@ const Home = () => {
     "/storage/emulated/0/DCIM/ScreenRecorder/",
     "/storage/emulated/0/Movies/Instagram/",
     "/storage/emulated/0/Movies/Telegram/"
-
   ];
 
   useEffect(() => {
@@ -131,9 +132,18 @@ const Home = () => {
     ImmersiveMode.fullLayout(true);
     ImmersiveMode.setBarMode('Full');
   }, [])
+
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: 'black' }}>
-      <Text style={styles.videoText}>Play Time</Text>
+    <View style={{ flex: 1, backgroundColor: '#fff', paddingTop: statusBarHeight }}>
+      <View style={styles.videTextView}>
+        <View style={styles.videoTextBox}>
+          <Image source={playTime} style={styles.playImage} />
+          <Text style={styles.videoText}>Play Time</Text>
+        </View>
+        <TouchableOpacity onPress={() => navigate(Path.INSTRUCTIONS, {})}>
+          <Image source={exclaim} style={styles.playImage} />
+        </TouchableOpacity>
+      </View>
       <View style={styles.line} />
 
       {loading && videoFiles.length === 0 ? (
@@ -156,7 +166,7 @@ const Home = () => {
           }
         />
       )}
-    </SafeAreaView>
+    </View>
   );
 };
 
