@@ -11,7 +11,6 @@ import LoaderScreen from '../../../components/loader';
 import { MMKV } from 'react-native-mmkv';
 import Orientation from 'react-native-orientation-locker';
 import ImmersiveMode from 'react-native-immersive-mode';
-import { useNavigation } from '@react-navigation/native';
 
 const storage = new MMKV();
 
@@ -22,7 +21,7 @@ const Home = () => {
   const [refreshing, setRefreshing] = useState(false);
   const videoExtensions = ['mp4', 'mkv', 'avi', 'mov', 'webm', 'flv', 'wmv'];
   const statusBarHeight = Platform.OS === 'android' ? StatusBar.currentHeight : 44;
-  
+
   const videoPaths = [
     RNFS?.DownloadDirectoryPath,
     '/storage/emulated/0/DCIM/Snapchat/',
@@ -80,7 +79,6 @@ const Home = () => {
 
           setVideoFiles((prevVideos: any) => {
             const updatedVideos = [...prevVideos, videoData];
-
             storage?.set('videos', JSON?.stringify(updatedVideos));
             return updatedVideos;
           });
@@ -92,11 +90,9 @@ const Home = () => {
 
     setVideoFiles((prevVideos: any) => {
       const updatedVideos = prevVideos.filter((video: any) => allCurrentVideoPaths?.has(video?.path));
-
       storage.set('videos', JSON?.stringify(updatedVideos));
       return updatedVideos;
     });
-
     setLoading(false);
   };
 
@@ -111,21 +107,23 @@ const Home = () => {
     setRefreshing(false);
   }, [videoFiles]);
 
-  const renderItem = ({ item }: { item: any }) => (
-    <TouchableOpacity
-      style={styles.videoItem}
-      onPress={() => navigate(Path?.FullScreenVideo, { videoUri: `file://${item.path}` })}
-    >
-      <View style={styles.textContainer}>
-        <Text style={styles.videoName} numberOfLines={2} ellipsizeMode="tail">
-          {item?.name}
-        </Text>
-      </View>
-      <Image
-        source={item?.thumbnail ? { uri: item.thumbnail } : play}
-        style={styles?.videoImage} />
-    </TouchableOpacity>
-  );
+  const renderItem = ({ item, index }: any) => {
+    return (
+      <TouchableOpacity
+        style={[styles.videoItem, index === (videoFiles.length / 2) ? { marginBottom: 10 } : {}]}
+        onPress={() => navigate(Path?.FullScreenVideo, { videoUri: `file://${item.path}` })}
+      >
+        <View style={styles.textContainer}>
+          <Text style={styles.videoName} numberOfLines={2} ellipsizeMode="tail">
+            {item?.name}
+          </Text>
+        </View>
+        <Image
+          source={item?.thumbnail ? { uri: item.thumbnail } : play}
+          style={styles?.videoImage} />
+      </TouchableOpacity>
+    )
+  };
 
   useEffect(() => {
     StatusBar.setHidden(true)
@@ -148,11 +146,11 @@ const Home = () => {
 
       {loading && videoFiles.length === 0 ? (
         <LoaderScreen visible={loading} />
-      ) : videoFiles.length === 0 ? (
+      ) : videoFiles?.length === 0 ? (
         <Text style={styles.noVideosText}>No videos found</Text>
       ) : (
         <FlatList
-          data={videoFiles.sort((a: any, b: any) => {
+          data={videoFiles?.sort((a: any, b: any) => {
             const timeA = a?.mtime instanceof Date ? a?.mtime?.getTime() : 0;
             const timeB = b?.mtime instanceof Date ? b?.mtime?.getTime() : 0;
             return timeB - timeA;

@@ -14,7 +14,7 @@ export const styles = StyleSheet.create({
     marginHorizontal: wp(2),
   },
   videTextView: {
-    paddingHorizontal: wp(5),
+    paddingHorizontal: wp(2),
     flexDirection: "row",
     justifyContent: "space-between"
   },
@@ -29,7 +29,7 @@ export const styles = StyleSheet.create({
   line: {
     height: hp(0.2),
     backgroundColor: "red",
-    width: wp(90),
+    width: wp(96),
     alignSelf: "center",
     marginTop: hp(1),
   },

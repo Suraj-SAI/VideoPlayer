@@ -1,12 +1,13 @@
 import React from 'react';
-import { View, Text, FlatList, TouchableOpacity, Image, RefreshControl, StatusBar, Platform } from 'react-native'
-const statusBarHeight = Platform.OS === 'android' ? StatusBar.currentHeight : 44;
+import { View, Text, TouchableOpacity, Image, StatusBar, Platform } from 'react-native'
 import { styles } from "./styles"
 import { exclaim, playTime } from '../../../constants/images';
 import { navigate } from '../../../services/navigationService';
 import { Path } from '../../../constants/path';
 
 const Music = () => {
+  const statusBarHeight = Platform.OS === 'android' ? StatusBar.currentHeight : 44;
+
   return (
     <View style={{ flex: 1, backgroundColor: '#fff', paddingTop: statusBarHeight }}>
       <View style={styles.videTextView}>
