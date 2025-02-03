@@ -10,21 +10,23 @@ import {
 import Orientation from 'react-native-orientation-locker';
 import {
   GestureHandlerRootView,
-  TapGestureHandler,
+  LongPressGestureHandler,
   State,
 } from 'react-native-gesture-handler';
 import ImmersiveMode from 'react-native-immersive-mode';
 import Video from 'react-native-video-controls';
-import { ReactNativeZoomableView } from '@openspacelabs/react-native-zoomable-view';
 
 const { width } = Dimensions.get('window');
 
+const SEEK_JUMP = 10; // Jump seconds per press
+const SEEK_INTERVAL = 200; // Milliseconds between seeks during long press
+
 const FullScreenVideoScreen = ({ route }: any) => {
   const { videoUri } = route.params;
-
   const navigation = useNavigation<any>();
   const videoRef = useRef<any>(null);
-  const [currentTime, setCurrentTime] = useState(0);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const currentTimeRef = useRef(0);
 
   const exitFullScreen = () => {
     navigation.goBack();
@@ -37,43 +39,56 @@ const FullScreenVideoScreen = ({ route }: any) => {
       exitFullScreen();
       return true;
     });
-
-    StatusBar.setHidden(true);
+ 
     ImmersiveMode.fullLayout(true);
     ImmersiveMode.setBarMode('Full');
     Orientation.unlockAllOrientations();
 
     return () => {
       backHandler.remove();
+      if (intervalRef.current) clearInterval(intervalRef.current);
     };
   }, []);
 
   const handleProgress = (progress: { currentTime: number }) => {
-    setCurrentTime(progress.currentTime);
+    currentTimeRef.current = progress.currentTime;
   };
 
-  const handleDoubleTap = (event: any) => {
-    if (event.nativeEvent.state === State.ACTIVE) {
-      const touchX = event.nativeEvent.x;
-      const playerInstance = videoRef.current?.player?.ref;
+  const handleSeek = (direction: 'forward' | 'backward') => {
+    const playerInstance = videoRef.current?.player?.ref;
+    if (!playerInstance) return;
 
-      if (!playerInstance) return;
+    const newTime = direction === 'forward'
+      ? currentTimeRef.current + SEEK_JUMP
+      : Math.max(0, currentTimeRef.current - SEEK_JUMP);
 
-      if (touchX < width / 2) {
-        playerInstance.seek(Math.max(0, currentTime - 10));
-      } else {
-        playerInstance.seek(currentTime + 10);
-      }
-    }
+    playerInstance.seek(newTime);
+    currentTimeRef.current = newTime;
   };
 
   return (
     <GestureHandlerRootView style={styles.container}>
-      <TapGestureHandler
-        numberOfTaps={2}
-        onHandlerStateChange={handleDoubleTap}
+      <LongPressGestureHandler
+        minDurationMs={400}
+        onHandlerStateChange={({ nativeEvent }) => {
+          if (nativeEvent.state === State.ACTIVE) {
+            const direction = nativeEvent.x < width / 2 ? 'backward' : 'forward';
+            handleSeek(direction); // Immediate seek on press
+            intervalRef.current = setInterval(() => {
+              handleSeek(direction);
+            }, SEEK_INTERVAL);
+          } else if (
+            nativeEvent.state === State.END ||
+            nativeEvent.state === State.CANCELLED
+          ) {
+            if (intervalRef.current) {
+              clearInterval(intervalRef.current);
+              intervalRef.current = null;
+            }
+          }
+        }}
       >
-        <View style={styles?.fullScreenWrapper}>
+        <View style={styles.fullScreenWrapper}>
           <Video
             ref={videoRef}
             disableVolume={false}
@@ -81,21 +96,20 @@ const FullScreenVideoScreen = ({ route }: any) => {
             resizeMode="contain"
             disableFullscreen={true}
             source={{ uri: videoUri }}
-            onShowControls={true}
-            repeat={true}
-            rate={1.0}
-            style={styles.videoPlayer}
             onProgress={handleProgress}
             onBack={exitFullScreen}
-            tapAnywhereToPause={true}
-            subtitles={{ uri: videoUri }}
+            style={styles.videoPlayer}
+            repeat={true}
+            rate={1.0}
+            disableZoom={true}
           />
         </View>
-      </TapGestureHandler>
+      </LongPressGestureHandler>
     </GestureHandlerRootView>
   );
 };
 
+// Keep the same styles as before
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -105,11 +119,6 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
     height: '100%',
-  },
-  zoomableView: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   videoPlayer: {
     width: '100%',

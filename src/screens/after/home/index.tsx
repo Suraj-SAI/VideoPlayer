@@ -22,7 +22,7 @@ const Home = () => {
   const videoExtensions = ['mp4', 'mkv', 'avi', 'mov', 'webm', 'flv', 'wmv'];
 
   const videoPaths = [
-    RNFS.DownloadDirectoryPath,
+    RNFS?.DownloadDirectoryPath,
     '/storage/emulated/0/DCIM/Snapchat/',
     '/storage/emulated/0/Android/media/com.whatsapp/WhatsApp/Media/WhatsApp Video/',
     '/storage/emulated/0/DCIM/Camera/',
@@ -41,9 +41,9 @@ const Home = () => {
     checkPermission();
 
 
-    const savedVideos = storage.getString('videos');
+    const savedVideos = storage?.getString('videos');
     if (savedVideos) {
-      setVideoFiles(JSON.parse(savedVideos));
+      setVideoFiles(JSON?.parse(savedVideos));
     }
 
     Orientation.lockToPortrait();
@@ -71,21 +71,16 @@ const Home = () => {
           const alreadyExists = videoFiles?.some((v: any) => v?.path === file?.path);
           if (alreadyExists) continue;
 
-          // const subtitleFile = await getSubtitleFile(file?.path);
-          // const audioFile = await getAudioFile(file?.path);
-
           const videoData = {
             ...file,
             mtime: new Date(file?.mtime),
             thumbnail: await generateThumbnail(file?.path),
-            // subtitle: subtitleFile ? `file://${subtitleFile}` : null,
-            // audio: audioFile ? `file://${audioFile}` : null,
           };
 
           setVideoFiles((prevVideos: any) => {
             const updatedVideos = [...prevVideos, videoData];
 
-            storage?.set('videos', JSON.stringify(updatedVideos));
+            storage?.set('videos', JSON?.stringify(updatedVideos));
             return updatedVideos;
           });
         }
