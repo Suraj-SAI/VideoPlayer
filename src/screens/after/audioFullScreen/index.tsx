@@ -5,7 +5,7 @@ import {
   TouchableOpacity,
   Image,
 } from 'react-native';
-import TrackPlayer, { useProgress, State } from 'react-native-track-player';
+import TrackPlayer, { useProgress, State, Event } from 'react-native-track-player';
 import { styles } from './styles';
 import { back, music, pausesign, playsign } from '../../../constants/images';
 import * as Progress from 'react-native-progress';
@@ -18,8 +18,6 @@ const AudioFullScreen = ({ route, navigation }: any) => {
   const progress = useProgress();
 
   useEffect(() => {
-    console.log(musics);
-
     const setupPlayer = async () => {
       try {
         await TrackPlayer.setupPlayer();
@@ -49,6 +47,25 @@ const AudioFullScreen = ({ route, navigation }: any) => {
     };
   }, [musicUri]);
 
+  useEffect(() => {
+    const listener = TrackPlayer.addEventListener(Event.PlaybackQueueEnded, async () => {
+      await playNextTrack();
+    });
+
+    return () => {
+      listener.remove();
+    };
+  }, [trackIndex]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (progress.position >= progress.duration - 1 && progress.duration > 0) {
+        playNextTrack();
+      }
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [progress]);
 
   const cleanup = async () => {
     try {
@@ -101,7 +118,6 @@ const AudioFullScreen = ({ route, navigation }: any) => {
     }
   };
 
-
   const playPreviousTrack = async () => {
     if (trackIndex > 0) {
       const newIndex = trackIndex - 1;
@@ -120,7 +136,6 @@ const AudioFullScreen = ({ route, navigation }: any) => {
       setIsPlaying(true);
     }
   };
-
 
   return (
     <View style={styles.container}>
@@ -157,7 +172,7 @@ const AudioFullScreen = ({ route, navigation }: any) => {
       </View>
 
       <View style={styles.trackInfo}>
-        <Text style={styles.trackTitle}>{musics[index]?.name}</Text>
+        <Text style={styles.trackTitle}>{musics[trackIndex]?.name}</Text>
       </View>
 
       <View style={styles.controls}>
