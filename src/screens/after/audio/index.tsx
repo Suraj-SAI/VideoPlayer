@@ -105,7 +105,7 @@ const Music = () => {
     return (
       <TouchableOpacity
         style={[styles.videoItem, index + 1 === musicFiles.length ? { marginBottom: hp(8) } : {}]}
-        onPress={() => navigate(Path?.MUSICFULLSCREEN, { musicUri: `file://${item.path}`, musics: item, index: index })}
+        onPress={() => navigate(Path?.MUSICFULLSCREEN, { musicUri: `file://${item.path}`, musics: musicFiles, index: index })}
       >
         <Image
           source={music}
