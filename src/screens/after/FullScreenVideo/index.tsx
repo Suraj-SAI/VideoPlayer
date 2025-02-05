@@ -73,7 +73,7 @@ const FullScreenVideoScreen = ({ route }: any) => {
         onHandlerStateChange={({ nativeEvent }) => {
           if (nativeEvent.state === State.ACTIVE) {
             const direction = nativeEvent.x < width / 2 ? 'backward' : 'forward';
-            handleSeek(direction); // Immediate seek on press
+            handleSeek(direction); 
             intervalRef.current = setInterval(() => {
               handleSeek(direction);
             }, SEEK_INTERVAL);
@@ -94,7 +94,7 @@ const FullScreenVideoScreen = ({ route }: any) => {
             disableVolume={false}
             disableBack={false}
             resizeMode="contain"
-            disableFullscreen={true}
+            disableFullscreen={false}
             source={{ uri: videoUri }}
             onProgress={handleProgress}
             onBack={exitFullScreen}

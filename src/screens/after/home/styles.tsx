@@ -73,6 +73,5 @@ export const styles = StyleSheet.create({
     height: "100%",
     resizeMode: "cover",
     borderRadius: 10,
-
   },
 });

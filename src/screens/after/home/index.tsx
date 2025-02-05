@@ -11,6 +11,7 @@ import LoaderScreen from '../../../components/loader';
 import { MMKV } from 'react-native-mmkv';
 import Orientation from 'react-native-orientation-locker';
 import ImmersiveMode from 'react-native-immersive-mode';
+import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
 const storage = new MMKV();
 
@@ -110,7 +111,7 @@ const Home = () => {
   const renderItem = ({ item, index }: any) => {
     return (
       <TouchableOpacity
-        style={[styles.videoItem, index === (videoFiles.length / 2) ? { marginBottom: 10 } : {}]}
+        style={[styles.videoItem, index + 1 === videoFiles.length ? { marginBottom: hp(8) , backgroundColor : "red" } : {}]}
         onPress={() => navigate(Path?.FullScreenVideo, { videoUri: `file://${item.path}` })}
       >
         <View style={styles.textContainer}>

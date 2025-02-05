@@ -20,6 +20,10 @@ const Instructions = () => {
         </TouchableOpacity>
       </View>
       <View style={styles.line} />
+
+      <View style={styles.instructionView}>
+        <Text style={styles.instructionText}>Instructions</Text>
+      </View>
     </View>
   )
 }
