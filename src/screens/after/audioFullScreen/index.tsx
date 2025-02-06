@@ -4,18 +4,19 @@ import {
   Text,
   TouchableOpacity,
   Image,
+  TouchableWithoutFeedback,
 } from 'react-native';
 import TrackPlayer, { useProgress, State, Event } from 'react-native-track-player';
 import { styles } from './styles';
 import { back, music, pausesign, playsign } from '../../../constants/images';
 import * as Progress from 'react-native-progress';
-import { widthPercentageToDP as wp } from 'react-native-responsive-screen';
 
 const AudioFullScreen = ({ route, navigation }: any) => {
   const { musicUri, musics, index } = route.params;
   const [trackIndex, setTrackIndex] = useState(index);
   const [isPlaying, setIsPlaying] = useState(true);
   const progress = useProgress();
+  const [progressBarWidth, setProgressBarWidth] = useState(0);
 
   useEffect(() => {
     const setupPlayer = async () => {
@@ -137,6 +138,15 @@ const AudioFullScreen = ({ route, navigation }: any) => {
     }
   };
 
+  const handleProgressPress = async (event: any) => {
+    if (progressBarWidth === 0 || !progress.duration) return;
+
+    const touchX = event.nativeEvent.locationX;
+    const position = (touchX / progressBarWidth) * progress.duration;
+    await TrackPlayer.seekTo(position);
+  };
+
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -158,7 +168,7 @@ const AudioFullScreen = ({ route, navigation }: any) => {
         </View>
       </View>
 
-      <View style={styles.progressContainer}>
+      {/* <View style={styles.progressContainer}>
         <Text style={styles.timeText}>{formatTime(progress.position)}</Text>
         <Progress.Bar
           progress={progress.duration > 0 ? progress.position / progress.duration : 0}
@@ -168,6 +178,31 @@ const AudioFullScreen = ({ route, navigation }: any) => {
           borderWidth={0}
           style={styles.progressBar}
         />
+        <Text style={styles.timeText}>{formatTime(progress.duration)}</Text>
+      </View> */}
+      <View style={styles.progressContainer}>
+        <Text style={styles.timeText}>{formatTime(progress.position)}</Text>
+        <TouchableWithoutFeedback onPress={handleProgressPress}>
+          <View
+            style={{
+              width: '80%',  // Match your original wp(90) value
+              justifyContent: 'center',
+            }}
+            onLayout={(event) => {
+              const { width } = event.nativeEvent.layout;
+              setProgressBarWidth(width);
+            }}
+          >
+            <Progress.Bar
+              progress={progress.duration > 0 ? progress.position / progress.duration : 0}
+              width={progressBarWidth}
+              color="red"
+              unfilledColor="#555"
+              borderWidth={0}
+              style={styles.progressBar}
+            />
+          </View>
+        </TouchableWithoutFeedback>
         <Text style={styles.timeText}>{formatTime(progress.duration)}</Text>
       </View>
 

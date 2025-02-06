@@ -59,13 +59,12 @@ export const styles = StyleSheet.create({
         marginBottom: hp(10),
     },
     progressBar: {
-        flex: 1,
-        marginHorizontal: 10,
+        width: '100%',
     },
     timeText: {
         color: '#000',
         fontSize: 12,
-        width: 40,
+        marginHorizontal : wp(2)
     },
     controls: {
         flexDirection: 'row',

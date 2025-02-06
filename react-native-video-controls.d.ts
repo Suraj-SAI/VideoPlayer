@@ -23,10 +23,6 @@ declare module 'react-native-video-controls' {
     disableVolume?: boolean;
     disableTimer?: boolean;
     disableBack?: boolean;
-    subtitles?: {
-      uri: string;
-      encoding?: string;
-    };
   };
 
   export default class Video extends React.Component<
