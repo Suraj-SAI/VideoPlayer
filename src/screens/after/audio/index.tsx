@@ -133,7 +133,7 @@ const Music = () => {
       {loading && musicFiles.length === 0 ? (
         <LoaderScreen visible={loading} />
       ) : musicFiles?.length === 0 ? (
-        <Text style={styles.noVideosText}>No videos found</Text>
+        <Text style={styles.noVideosText}>No Music Found</Text>
       ) : (
         <FlatList
           data={musicFiles?.sort((a: any, b: any) => {

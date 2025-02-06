@@ -20,8 +20,17 @@ const Share = () => {
                 </TouchableOpacity>
             </View>
             <View style={styles.line} />
+
+            <View style={styles.bodyView}>
+                <TouchableOpacity style={styles.recieveView}>
+                    <Text style={styles.recieveText}>Recieve</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.sendView}>
+                    <Text style={styles.sendText}>Send</Text>
+                </TouchableOpacity>
+            </View>
         </View>
     )
 }
 
-export default Share
+export default Share;

@@ -29,4 +29,37 @@ export const styles = StyleSheet.create({
         alignSelf: "center",
         marginTop: hp(1),
     },
+    bodyView: {
+        flex: 1,
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center"
+    },
+    recieveView: {
+        backgroundColor: "red",
+        marginBottom: hp(2),
+        paddingHorizontal: wp(5),
+        paddingVertical: hp(2),
+        borderRadius: wp(2),
+        width : wp(40)
+    },
+    recieveText: {
+        color: "#fff",
+        fontSize : hp(2.1),
+        fontWeight : "bold",
+        textAlign : "center"
+    },
+    sendView: {
+        backgroundColor: "red",
+        paddingHorizontal: wp(5),
+        paddingVertical: hp(2),
+        borderRadius: wp(2),
+        width : wp(40)
+    },
+    sendText: {
+        color: "#fff",
+        fontSize : hp(2.1),
+        fontWeight : "bold",
+        textAlign : "center"
+    }
 })
